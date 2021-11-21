@@ -1,0 +1,14 @@
+{
+  "keycloak-provider": {
+    "protocol": "http", //http | https
+    "host": "localhost",
+    "port": 8080,
+    "realm": "demo",
+    "accessType": {
+      "grant_type": "password",
+      "client_id": "demo-client",
+      "username":"demo-user",
+      "password":"password"
+    }
+  }
+}
