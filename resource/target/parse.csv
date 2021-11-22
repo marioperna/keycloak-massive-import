@@ -1,8 +1,2 @@
 firstName,lastName,email,enabled,username
-Mario,Test,mario@test.it,true,mtest
-Mario,Test,mario@test11.it,true,mtest11
-Mario,Test,mario@test22.it,true,mtest22
-Mario,Test,mario@test33.it,true,mtest33
-Mario,Test,mario@test44.it,true,mtest44
-Mario,Test,mario@test55.it,true,mtest55
-Mario,Test,mario@test66.it,true,mtest66
+Mario,Rossi,m.rossi@domain.it,true,mrossi
