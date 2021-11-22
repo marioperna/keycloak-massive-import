@@ -4,12 +4,8 @@
 const config = require('config');
 const axios = require('axios').default;
 const fastCsv = require('fast-csv');
-// const csv = require('fast-csv')
-
 const fs = require('fs-extra');
 const path = require('path');
-//const csvParse = require("csv-parse");
-
 
 const KEYCLOAK = config.get('keycloak-provider');
 const KEYCLOAK_FULL_ADR = KEYCLOAK.protocol + '://' + KEYCLOAK.host + ':' + KEYCLOAK.port;
@@ -19,14 +15,11 @@ const keycloakAPI = axios.create({
 });
 
 
-/****VARIABILI */
+/**** VARIABLES ****/
 var keycloak_access_token = undefined;
 var csvData = [];
 
 /**** FUNCTIONS ****/
-
-
-
 function keycloakLogin() {
     let params = new URLSearchParams();
     params.append('grant_type', KEYCLOAK.accessType.grant_type);
@@ -41,12 +34,7 @@ function keycloakLogin() {
     });
 }
 
-
-
-
-
 function init() {
-
     keycloakLogin()
         .then(res => {
             console.log("Access Token KEYCLOAK: ", res.data.access_token);
@@ -66,9 +54,6 @@ function init() {
         });
 }
 
-
-
-
 function processDataParsed(rows) {
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
@@ -84,5 +69,5 @@ function processDataParsed(rows) {
     }
 }
 
-
-init()
+/********* MAIN *********/
+init();
