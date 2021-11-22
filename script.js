@@ -18,7 +18,6 @@ const keycloakAPI = axios.create({
 /**** VARIABLES ****/
 var keycloak_access_token = undefined;
 var csvData = [];
-
 /**** FUNCTIONS ****/
 function keycloakLogin() {
     let params = new URLSearchParams();
@@ -37,7 +36,9 @@ function keycloakLogin() {
 function init() {
     keycloakLogin()
         .then(res => {
+            console.log("===================TOKEN===================");
             console.log("Access Token KEYCLOAK: ", res.data.access_token);
+            console.log("======================================");
             keycloak_access_token = res.data.access_token;
             fs.createReadStream(path.resolve(__dirname, './resource/target', 'parse.csv'))
                 .pipe(fastCsv.parse({ headers: true }))
@@ -46,7 +47,7 @@ function init() {
                     csvData.push(row);
                 })
                 .on('end', rowCount => {
-                    console.log(csvData)
+                    //console.log(csvData)
                     processDataParsed(csvData);
                 });
         }).catch(err => {
@@ -55,18 +56,30 @@ function init() {
 }
 
 function processDataParsed(rows) {
-    for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        keycloakAPI.post('/auth/admin/realms/' + KEYCLOAK.realm + '/users', row, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${keycloak_access_token}`
-            }
-        }).catch(err => {
-            console.log(err);
-        })
+    var promises = [];
+    var importedUsers = [];
+    let headerProcessData = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${keycloak_access_token}`
+    };
 
+    for (let i = 0; i < rows.length; i++) {
+        let row = rows[i];
+        promises.push(
+            keycloakAPI.post('/auth/admin/realms/' + KEYCLOAK.realm + '/users', row, {headers:headerProcessData})
+                .then(() => {
+                    importedUsers.push(row);
+                })
+        );
     }
+
+    Promise.all(promises).then(() => {
+        console.log("===================IMPORTED USERS===================");
+        console.log(importedUsers)
+        console.log("===================");
+    }).catch(err => {
+        console.log(`Errore durante l'import dei dati ${err.config.data} con causale ${err.response.data.errorMessage}`);
+    })
 }
 
 /********* MAIN *********/
